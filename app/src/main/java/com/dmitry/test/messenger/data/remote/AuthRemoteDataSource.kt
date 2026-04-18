@@ -1,6 +1,7 @@
 package com.dmitry.test.messenger.data.remote
 
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.FirebaseUser
 import javax.inject.Inject
 
 class AuthRemoteDataSource @Inject constructor(
