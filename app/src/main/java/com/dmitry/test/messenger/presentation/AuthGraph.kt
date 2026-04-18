@@ -1,5 +1,6 @@
 package com.dmitry.test.messenger.presentation
 
+import android.util.Log
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder

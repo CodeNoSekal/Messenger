@@ -48,7 +48,7 @@ fun MessengerApp(
         }
 
         authGraph(navController)
-//        mainGraph(navController)
+        mainGraph(navController)
     }
 }
 

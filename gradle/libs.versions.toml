@@ -27,6 +27,7 @@ roomPaging = "2.8.4"
 roomRuntime = "2.8.4"
 
 [libraries]
+androidx-compose-material-icons-extended = { module = "androidx.compose.material:material-icons-extended" }
 androidx-credentials = { module = "androidx.credentials:credentials", version.ref = "credentials" }
 androidx-credentials-play-services-auth = { module = "androidx.credentials:credentials-play-services-auth", version.ref = "credentials" }
 firebase-analytics = { module = "com.google.firebase:firebase-analytics" }

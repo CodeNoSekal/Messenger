@@ -17,11 +17,8 @@ fun SplashScreen(
     navController: NavHostController,
     authViewModel: AuthViewModel
 ) {
-    Log.d("SplashScreen", "Экран распределдения")
-
     LaunchedEffect(Unit) {
         if (authViewModel.isUserLoggedIn()) {
-            Log.d("SplashScreen", "Грузимся в логин")
             navController.navigate(Screen.MainGraph.route) {
                 popUpTo(Screen.Splash.route) { inclusive = true }
             }

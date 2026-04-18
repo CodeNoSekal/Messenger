@@ -1,5 +1,6 @@
 package com.dmitry.test.messenger.data.repository
 
+import android.util.Log
 import com.dmitry.test.messenger.data.remote.AuthRemoteDataSource
 import com.dmitry.test.messenger.domain.repository.AuthRepository
 import kotlinx.coroutines.tasks.await
@@ -20,6 +21,12 @@ class AuthRepositoryImpl @Inject constructor(
     }
 
     override fun getCurrentUser(): String? {
-        return remote.getCurrentUser()?.uid
+        val user = remote.getCurrentUser()
+        try {
+            user?.reload()
+            return user?.uid
+        } catch (e: Exception){
+            return user?.uid
+        }
     }
 }
