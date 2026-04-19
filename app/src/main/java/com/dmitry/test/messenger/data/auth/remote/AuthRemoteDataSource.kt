@@ -1,4 +1,4 @@
-package com.dmitry.test.messenger.data.remote
+package com.dmitry.test.messenger.data.auth.remote
 
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser

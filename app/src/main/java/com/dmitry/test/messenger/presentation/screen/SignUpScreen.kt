@@ -62,7 +62,6 @@ fun SignUpScreen(
                 popUpTo(Screen.Splash.route) { inclusive = true }
             }
 
-            authViewModel.sendEmailVerification()
             authViewModel.resetAuthUiState()
         }
     }

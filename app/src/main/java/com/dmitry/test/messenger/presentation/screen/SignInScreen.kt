@@ -48,11 +48,23 @@ fun SignInScreen(
     Log.d("SignIn", "Мы тут были")
 
     LaunchedEffect(userState) {
-        if (userState is UserState.Authenticated) {
-            navController.navigate(Screen.MainGraph.route) {
-                popUpTo(Screen.Splash.route) { inclusive = true }
+        when(userState) {
+            is UserState.Authenticated -> {
+                navController.navigate(Screen.MainGraph.route) {
+                    popUpTo(Screen.Splash.route) { inclusive = true }
+                }
+                authViewModel.resetAuthUiState()
             }
-            authViewModel.resetAuthUiState()
+
+            is UserState.EmailNotVerified -> {
+                navController.navigate(Screen.EmailVerification.route) {
+                    popUpTo(Screen.Splash.route) { inclusive = true }
+                }
+
+                authViewModel.resetAuthUiState()
+            }
+
+            else -> {}
         }
     }
 

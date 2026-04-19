@@ -1,6 +1,6 @@
-package com.dmitry.test.messenger.data.repository
+package com.dmitry.test.messenger.data.auth.repository
 
-import com.dmitry.test.messenger.data.remote.AuthRemoteDataSource
+import com.dmitry.test.messenger.data.auth.remote.AuthRemoteDataSource
 import com.dmitry.test.messenger.domain.repository.AuthRepository
 import com.google.firebase.auth.FirebaseUser
 import kotlinx.coroutines.tasks.await

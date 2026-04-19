@@ -56,6 +56,9 @@ fun MessengerApp(
 
         composable(Screen.EmailVerification.route) {
             val authState by authViewModel.userState.collectAsState()
+
+            authViewModel.sendEmailVerification()
+
             EmailVerificationScreen(navController, authState, authViewModel)
         }
 
