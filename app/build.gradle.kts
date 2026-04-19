@@ -80,18 +80,6 @@ dependencies {
     implementation(libs.googleid)
     implementation(libs.firebase.firestore)
 
-    implementation(libs.retrofit)
-    implementation(libs.converter.moshi)
-    implementation(libs.logging.interceptor)
-    implementation(libs.moshi)
-    implementation(libs.moshi.kotlin)
-
-    implementation(libs.androidx.room.runtime)
-    ksp(libs.androidx.room.compiler)
-
-    implementation(libs.androidx.room.paging)
-    implementation(libs.androidx.paging.runtime)
-    implementation(libs.androidx.paging.compose)
 
     implementation(libs.hilt.android)
     ksp(libs.hilt.android.compiler)
