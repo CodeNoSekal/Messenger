@@ -7,7 +7,6 @@ import javax.inject.Inject
 class AuthRemoteDataSource @Inject constructor(
     private val auth: FirebaseAuth
 ) {
-
     fun signUp(email: String, password: String) =
         auth.createUserWithEmailAndPassword(email, password)
 

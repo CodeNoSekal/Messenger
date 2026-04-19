@@ -29,6 +29,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
+import com.dmitry.test.messenger.domain.repository.UserState
 import com.dmitry.test.messenger.presentation.AuthScreen
 import com.dmitry.test.messenger.presentation.AuthViewModel
 import com.dmitry.test.messenger.presentation.Screen
@@ -38,18 +39,20 @@ fun SignInScreen(
     navController: NavController,
     authViewModel: AuthViewModel
 ) {
-    val uiState by authViewModel.uiState.collectAsState()
+    val userState by authViewModel.userState.collectAsState()
+    val authUiState by authViewModel.authUiState.collectAsState()
+
     var email by rememberSaveable { mutableStateOf("") }
     var password by rememberSaveable { mutableStateOf("") }
 
     Log.d("SignIn", "Мы тут были")
 
-    LaunchedEffect(uiState) {
-        if (uiState is AuthViewModel.AuthUiState.Success) {
+    LaunchedEffect(userState) {
+        if (userState is UserState.Authenticated) {
             navController.navigate(Screen.MainGraph.route) {
                 popUpTo(Screen.Splash.route) { inclusive = true }
             }
-            authViewModel.resetState()
+            authViewModel.resetAuthUiState()
         }
     }
 
@@ -89,10 +92,10 @@ fun SignInScreen(
 
         Button(
             onClick = { authViewModel.signIn(email, password) },
-            enabled = uiState !is AuthViewModel.AuthUiState.Loading,
+            enabled = authUiState !is AuthViewModel.AuthUiState.Loading,
             modifier = Modifier.fillMaxWidth()
         ) {
-            if (uiState is AuthViewModel.AuthUiState.Loading) {
+            if (authUiState is AuthViewModel.AuthUiState.Loading) {
                 CircularProgressIndicator(
                     modifier = Modifier.size(24.dp),
                     color = Color.White
@@ -102,8 +105,8 @@ fun SignInScreen(
             }
         }
 
-        if (uiState is AuthViewModel.AuthUiState.Error) {
-            (uiState as AuthViewModel.AuthUiState.Error).message?.let {
+        if (authUiState is AuthViewModel.AuthUiState.Error) {
+            (authUiState as AuthViewModel.AuthUiState.Error).message?.let {
                 Text(
                     text = it,
                     color = MaterialTheme.colorScheme.error,

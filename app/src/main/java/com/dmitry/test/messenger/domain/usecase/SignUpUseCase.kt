@@ -7,6 +7,7 @@ class SignUpUseCase @Inject constructor(
     private val repository: AuthRepository
 ) {
     suspend operator fun invoke(email: String, password: String): String {
-        return repository.signUp(email, password)
+        val user = repository.signUp(email, password)
+        return user.uid
     }
 }

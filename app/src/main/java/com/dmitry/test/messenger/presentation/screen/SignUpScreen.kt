@@ -38,6 +38,7 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import com.dmitry.test.messenger.domain.repository.UserState
 import com.dmitry.test.messenger.presentation.AuthScreen
 import com.dmitry.test.messenger.presentation.AuthViewModel
 import com.dmitry.test.messenger.presentation.Screen
@@ -47,17 +48,22 @@ fun SignUpScreen(
     navController: NavController,
     authViewModel: AuthViewModel
 ) {
-    val uiState by authViewModel.uiState.collectAsState()
+    val userState by authViewModel.userState.collectAsState()
+    val authUiState by authViewModel.authUiState.collectAsState()
+
+
     var email by rememberSaveable { mutableStateOf("") }
     var password by rememberSaveable { mutableStateOf("") }
     var passwordVisible by remember { mutableStateOf(false) }
 
-    LaunchedEffect(uiState) {
-        if (uiState is AuthViewModel.AuthUiState.Success) {
-            navController.navigate(Screen.MainGraph.route) {
+    LaunchedEffect(userState) {
+        if (userState is UserState.EmailNotVerified) {
+            navController.navigate(Screen.EmailVerification.route) {
                 popUpTo(Screen.Splash.route) { inclusive = true }
             }
-            authViewModel.resetState()
+
+            authViewModel.sendEmailVerification()
+            authViewModel.resetAuthUiState()
         }
     }
 
@@ -124,10 +130,10 @@ fun SignUpScreen(
 
         Button(
             onClick = { authViewModel.signUp(email, password) },
-            enabled = uiState !is AuthViewModel.AuthUiState.Loading,
+            enabled = authUiState !is AuthViewModel.AuthUiState.Loading,
             modifier = Modifier.fillMaxWidth()
         ) {
-            if (uiState is AuthViewModel.AuthUiState.Loading) {
+            if (authUiState is AuthViewModel.AuthUiState.Loading) {
                 CircularProgressIndicator(
                     modifier = Modifier.size(24.dp),
                     color = Color.White
@@ -137,8 +143,8 @@ fun SignUpScreen(
             }
         }
 
-        if (uiState is AuthViewModel.AuthUiState.Error) {
-            (uiState as AuthViewModel.AuthUiState.Error).message?.let {
+        if (authUiState is AuthViewModel.AuthUiState.Error) {
+            (authUiState as AuthViewModel.AuthUiState.Error).message?.let {
                 Text(
                     text = it,
                     color = MaterialTheme.colorScheme.error,

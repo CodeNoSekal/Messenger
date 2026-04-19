@@ -1,12 +1,13 @@
 package com.dmitry.test.messenger.presentation
 
-import android.util.Log
+import android.os.Message
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.dmitry.test.messenger.domain.repository.AuthState
-import com.dmitry.test.messenger.domain.usecase.GetCurrentUserUseCase
+import com.dmitry.test.messenger.domain.repository.UserState
 import com.dmitry.test.messenger.domain.usecase.SignInUseCase
 import com.dmitry.test.messenger.domain.usecase.SignUpUseCase
+import com.dmitry.test.messenger.domain.usecase.GetUserSetupStateUseCase
+import com.dmitry.test.messenger.domain.usecase.SendEmailVerificationUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -18,40 +19,67 @@ import javax.inject.Inject
 class AuthViewModel @Inject constructor(
     private val signUpUseCase: SignUpUseCase,
     private val signInUseCase: SignInUseCase,
-    private val getCurrentUserUseCase: GetCurrentUserUseCase
+    private val getUserSetupStateUseCase: GetUserSetupStateUseCase,
+    private val sendEmailVerificationUseCase: SendEmailVerificationUseCase
 ) : ViewModel() {
 
-    private val _uiState = MutableStateFlow<AuthState>(AuthState.Unauthenticated)
-    val uiState: StateFlow<AuthState> = _uiState.asStateFlow()
+    private val _userState = MutableStateFlow<UserState>(UserState.Loading)
+    val userState: StateFlow<UserState> = _userState.asStateFlow()
+
+    private val _authUiState = MutableStateFlow<AuthUiState>(AuthUiState.Idle)
+    val authUiState: StateFlow<AuthUiState> = _authUiState.asStateFlow()
+
+    init {
+        updateUserState()
+    }
+
+    sealed class AuthUiState{
+        object Idle: AuthUiState()
+        object Loading: AuthUiState()
+        data class Success(val uid: String): AuthUiState()
+        data class Error(val message: String?): AuthUiState()
+    }
 
     fun signUp(email: String, password: String) {
         viewModelScope.launch {
-//            _uiState.value = AuthState.Loading
-//            try {
-//                val uid = signUpUseCase(email, password)
-//                _uiState.value = AuthState.Success(uid)
-//            } catch (e: Exception) {
-//                _uiState.value = AuthState.Error(e.message)
-//            }
+            _authUiState.value = AuthUiState.Loading
+            try {
+                val uid = signUpUseCase(email, password)
+                _authUiState.value = AuthUiState.Success(uid)
+                updateUserState()
+            } catch (e: Exception) {
+                _authUiState.value = AuthUiState.Error(e.message)
+            }
         }
     }
 
     fun signIn(email: String, password: String) {
         viewModelScope.launch {
-//            _uiState.value = AuthState.Loading
-//            try {
-//                val uid = signInUseCase(email, password)
-//                _uiState.value = AuthState.Success(uid)
-//            } catch (e: Exception) {
-//                _uiState.value = AuthState.Error(e.message)
-//            }
+            _authUiState.value = AuthUiState.Loading
+            try {
+                val uid = signInUseCase(email, password)
+                _authUiState.value = AuthUiState.Success(uid)
+                updateUserState()
+            } catch (e: Exception) {
+                _authUiState.value = AuthUiState.Error(e.message)
+            }
         }
     }
 
-    fun checkUserLoggedIn() {
+    fun updateUserState() {
         viewModelScope.launch {
-            _uiState.value = getCurrentUserUseCase()
+            _userState.value = getUserSetupStateUseCase()
         }
+    }
+
+    fun sendEmailVerification() {
+        viewModelScope.launch {
+            sendEmailVerificationUseCase()
+        }
+    }
+
+    fun resetAuthUiState(){
+        _authUiState.value = AuthUiState.Idle
     }
 
 }

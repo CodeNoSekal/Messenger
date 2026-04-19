@@ -3,11 +3,11 @@ package com.dmitry.test.messenger.domain.usecase
 import com.dmitry.test.messenger.domain.repository.AuthRepository
 import javax.inject.Inject
 
-class SignInUseCase @Inject constructor(
+class SendEmailVerificationUseCase @Inject constructor(
     private val repository: AuthRepository
 ) {
-    suspend operator fun invoke(email: String, password: String): String {
-        val user = repository.signIn(email, password)
-        return user.uid
+    suspend operator fun invoke(){
+        val user = repository.getCurrentUser()
+        user?.sendEmailVerification()
     }
 }

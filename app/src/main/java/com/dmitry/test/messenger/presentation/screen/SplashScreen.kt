@@ -9,23 +9,35 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
-import com.dmitry.test.messenger.presentation.AuthViewModel
+import com.dmitry.test.messenger.domain.repository.UserState
 import com.dmitry.test.messenger.presentation.Screen
 
 @Composable
 fun SplashScreen(
     navController: NavHostController,
-    authViewModel: AuthViewModel
+    userState: UserState
 ) {
-    LaunchedEffect(Unit) {
-        if (authViewModel.isUserLoggedIn()) {
-            navController.navigate(Screen.MainGraph.route) {
-                popUpTo(Screen.Splash.route) { inclusive = true }
+    LaunchedEffect(userState) {
+        when(userState) {
+            is UserState.Authenticated -> {
+                navController.navigate(Screen.MainGraph.route) {
+                    popUpTo(Screen.Splash.route) { inclusive = true }
+                }
             }
-        } else {
-            navController.navigate(Screen.AuthGraph.route) {
-                popUpTo(Screen.Splash.route) { inclusive = true }
+
+            is UserState.Unauthenticated -> {
+                navController.navigate(Screen.AuthGraph.route) {
+                    popUpTo(Screen.Splash.route) { inclusive = true }
+                }
             }
+
+            is UserState.EmailNotVerified -> {
+                navController.navigate(Screen.EmailVerification.route) {
+                    popUpTo(Screen.Splash.route) { inclusive = true }
+                }
+            }
+
+            else -> {}
         }
     }
 
