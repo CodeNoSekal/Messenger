@@ -1,6 +1,6 @@
 package com.dmitry.test.messenger.di
 
-import com.dmitry.test.messenger.data.remote.DatabaseRemoteDataStore
+import com.dmitry.test.messenger.data.remote.ProfileRemoteDataStore
 import com.dmitry.test.messenger.data.repository.UserProfileRepositoryImpl
 import com.dmitry.test.messenger.domain.repository.UserProfileRepository
 import com.google.firebase.firestore.FirebaseFirestore
@@ -20,7 +20,7 @@ object DatabaseModule {
 
     @Provides
     fun provideUserProfileRepository(
-        remote: DatabaseRemoteDataStore
+        remote: ProfileRemoteDataStore
     ): UserProfileRepository {
         return UserProfileRepositoryImpl(remote)
     }

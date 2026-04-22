@@ -1,48 +1,110 @@
 package com.dmitry.test.messenger.data.remote
 
-import com.dmitry.test.messenger.domain.UserProfile
+import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
-import kotlinx.coroutines.channels.awaitClose
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.tasks.await
 import javax.inject.Inject
 
 class DatabaseRemoteDataStore @Inject constructor(
     private val firestore: FirebaseFirestore
 ){
-    suspend fun createProfile(uid: String, profile: UserProfile){
-        firestore.collection("users")
-            .document(uid)
-            .set(profile)
-            .await()
-    }
+    suspend fun createChatIfNotExists(
+        currentUserId: String,
+        otherUserId: String,
+        currentUserName: String,
+        otherUserName: String
+    ): String {
 
-    fun observeProfile(uid: String): Flow<UserProfile?> = callbackFlow {
-        val listener = firestore.collection("users")
-            .document(uid)
-            .addSnapshotListener { snapshot, error ->
+        val chatId = generateChatId(currentUserId, otherUserId)
+        val chatRef = firestore.collection("chats").document(chatId)
 
-                if (error != null) {
-                    close(error)
-                    return@addSnapshotListener
-                }
+        val snapshot = chatRef.get().await()
 
-                val profile = snapshot?.toObject(UserProfile::class.java)
-                trySend(profile)
-            }
+        if(!snapshot.exists()){
 
-        awaitClose {
-            listener.remove()
+            val chat = hashMapOf(
+                "participants" to listOf(currentUserId, otherUserId),
+                "lastMessage" to "",
+                "lastMessageTime" to FieldValue.serverTimestamp(),
+                "lastMessageSenderId" to ""
+            )
+
+            chatRef.set(chat).await()
+
+            createUserChat(currentUserId, chatId, otherUserId, otherUserName)
+            createUserChat(otherUserId, chatId, currentUserId, currentUserName)
         }
+
+        return chatId
     }
 
-    suspend fun getProfile(uid: String) : UserProfile? {
-        val snapshot = firestore.collection("users")
-            .document(uid)
-            .get()
-            .await()
+    fun generateChatId(user1: String, user2: String): String {
+        return listOf(user1, user2).sorted().joinToString("_")
+    }
 
-        return snapshot.toObject(UserProfile::class.java)
+    suspend fun createUserChat(
+        userId: String,
+        chatId: String,
+        otherUserId: String,
+        otherUserName: String
+    ) {
+        val data = hashMapOf(
+            "chatId" to chatId,
+            "otherUserId" to otherUserId,
+            "otherUserName" to otherUserName,
+            "lastMessage" to "",
+            "lastMessageTime" to FieldValue.serverTimestamp()
+        )
+
+        firestore.collection("userChats")
+            .document(userId)
+            .collection("chats")
+            .document(chatId)
+            .set(data)
+            .await()
+    }
+
+    suspend fun sendMessage(
+        chatId: String,
+        text: String,
+        senderId: String,
+        receiverId: String
+    ) {
+        val message = hashMapOf(
+            "text" to text,
+            "senderId" to senderId,
+            "timestamp" to FieldValue.serverTimestamp()
+        )
+
+        val chatRef = firestore.collection("chats").document(chatId)
+
+        chatRef.collection("messages").add(message).await()
+
+        chatRef.update(
+            mapOf(
+                "lastMessage" to text,
+                "lastMessageTime" to FieldValue.serverTimestamp(),
+                "lastMessageSenderId" to senderId
+            )
+        )
+
+
+    }
+
+    suspend fun updateUserChat(
+        userId: String,
+        chatId: String,
+        lastMessage: String
+    ) {
+        firestore.collection("userChats")
+            .document(userId)
+            .collection("chats")
+            .document(chatId)
+            .update(
+                mapOf(
+                    "lastMessage" to lastMessage,
+                    "lastMessageTime" to FieldValue.serverTimestamp()
+                )
+            )
     }
 }

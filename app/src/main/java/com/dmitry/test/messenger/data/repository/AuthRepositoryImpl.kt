@@ -2,12 +2,9 @@ package com.dmitry.test.messenger.data.repository
 
 import com.dmitry.test.messenger.data.CurrentUserStatus
 import com.dmitry.test.messenger.data.remote.AuthRemoteDataSource
-import com.dmitry.test.messenger.data.remote.DatabaseRemoteDataStore
 import com.dmitry.test.messenger.domain.repository.AuthRepository
-import com.dmitry.test.messenger.domain.repository.UserProfileRepository
 import com.dmitry.test.messenger.domain.repository.UserState
 import com.google.firebase.auth.FirebaseAuthInvalidUserException
-import com.google.firebase.auth.FirebaseUser
 import kotlinx.coroutines.tasks.await
 import javax.inject.Inject
 
