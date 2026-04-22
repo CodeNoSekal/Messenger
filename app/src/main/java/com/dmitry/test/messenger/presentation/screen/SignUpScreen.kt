@@ -1,6 +1,7 @@
 package com.dmitry.test.messenger.presentation.screen
 
 import android.util.Log
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -68,10 +69,11 @@ fun SignUpScreen(
 
     Column(
         modifier = Modifier
+            .background(Color.White)
             .fillMaxSize()
             .padding(24.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Center
+        verticalArrangement = Arrangement.Top
     ) {
         Text(
             text = "Sign up",

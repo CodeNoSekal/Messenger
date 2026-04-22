@@ -25,11 +25,15 @@ fun EmailVerificationScreen(
 ) {
 
     LaunchedEffect(userState) {
-        if (userState is UserState.Authenticated) {
-            navController.navigate(Screen.MainGraph.route) {
+        if (userState is UserState.ProfileNotCreated) {
+            navController.navigate(Screen.ProfileCreation.route) {
                 popUpTo(Screen.Splash.route) { inclusive = true }
             }
         }
+    }
+
+    LaunchedEffect(Unit) {
+        authViewModel.sendEmailVerification()
     }
 
     Column(

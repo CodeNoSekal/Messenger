@@ -1,12 +1,12 @@
 package com.dmitry.test.messenger.presentation
 
-import android.os.Message
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.dmitry.test.messenger.domain.repository.UserState
 import com.dmitry.test.messenger.domain.usecase.SignInUseCase
 import com.dmitry.test.messenger.domain.usecase.SignUpUseCase
-import com.dmitry.test.messenger.domain.usecase.GetUserSetupStateUseCase
+import com.dmitry.test.messenger.domain.usecase.GetUserStateUseCase
 import com.dmitry.test.messenger.domain.usecase.SendEmailVerificationUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -19,7 +19,7 @@ import javax.inject.Inject
 class AuthViewModel @Inject constructor(
     private val signUpUseCase: SignUpUseCase,
     private val signInUseCase: SignInUseCase,
-    private val getUserSetupStateUseCase: GetUserSetupStateUseCase,
+    private val getUserStateUseCase: GetUserStateUseCase,
     private val sendEmailVerificationUseCase: SendEmailVerificationUseCase
 ) : ViewModel() {
 
@@ -68,7 +68,11 @@ class AuthViewModel @Inject constructor(
 
     fun updateUserState() {
         viewModelScope.launch {
-            _userState.value = getUserSetupStateUseCase()
+            try {
+                _userState.value = getUserStateUseCase()
+            } catch (e: Exception) {
+                Log.e("Firestore", "Error getting profile", e) // 🔥 ты наконец увидишь ошибку
+            }
         }
     }
 

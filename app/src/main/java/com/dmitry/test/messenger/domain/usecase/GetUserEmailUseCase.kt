@@ -8,6 +8,6 @@ class GetUserEmailUseCase @Inject constructor(
     private val repository: AuthRepository
 ) {
     suspend operator fun invoke(): String? {
-        return repository.getCurrentUser()?.email
+        return repository.getUserEmail()
     }
 }

@@ -37,6 +37,12 @@ fun SplashScreen(
                 }
             }
 
+            is UserState.ProfileNotCreated -> {
+                navController.navigate(Screen.ProfileCreation.route) {
+                    popUpTo(Screen.Splash.route) { inclusive = true }
+                }
+            }
+
             else -> {}
         }
     }

@@ -7,7 +7,6 @@ class SendEmailVerificationUseCase @Inject constructor(
     private val repository: AuthRepository
 ) {
     suspend operator fun invoke(){
-        val user = repository.getCurrentUser()
-        user?.sendEmailVerification()
+        repository.sendEmailVerification()
     }
 }
