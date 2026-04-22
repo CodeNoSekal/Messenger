@@ -1,10 +1,7 @@
 package com.dmitry.test.messenger.di
 
-import com.dmitry.test.messenger.data.remote.AuthRemoteDataSource
 import com.dmitry.test.messenger.data.remote.DatabaseRemoteDataStore
-import com.dmitry.test.messenger.data.repository.AuthRepositoryImpl
 import com.dmitry.test.messenger.data.repository.UserProfileRepositoryImpl
-import com.dmitry.test.messenger.domain.repository.AuthRepository
 import com.dmitry.test.messenger.domain.repository.UserProfileRepository
 import com.google.firebase.firestore.FirebaseFirestore
 import dagger.Module

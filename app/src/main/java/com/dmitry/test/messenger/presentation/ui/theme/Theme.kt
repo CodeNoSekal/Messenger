@@ -6,30 +6,32 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.darkColorScheme
 import androidx.compose.material3.dynamicDarkColorScheme
 import androidx.compose.material3.dynamicLightColorScheme
-import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 
 private val DarkColorScheme = darkColorScheme(
-    primary = Purple80,
-    secondary = PurpleGrey80,
-    tertiary = Pink80
-)
+    primary = Color(0xFFEAEAEA),        // акцент (светлый)
+    onPrimary = Color(0xFF121212),
 
-private val LightColorScheme = lightColorScheme(
-    primary = Purple40,
-    secondary = PurpleGrey40,
-    tertiary = Pink40
+    secondary = Color(0xFFB0B0B0),
+    onSecondary = Color(0xFF121212),
 
-    /* Other default colors to override
-    background = Color(0xFFFFFBFE),
-    surface = Color(0xFFFFFBFE),
-    onPrimary = Color.White,
-    onSecondary = Color.White,
-    onTertiary = Color.White,
-    onBackground = Color(0xFF1C1B1F),
-    onSurface = Color(0xFF1C1B1F),
-    */
+    tertiary = Color(0xFF8A8A8A),
+
+    background = Color(0xFF121212),     // основной фон
+    onBackground = Color(0xFFEAEAEA),
+
+    surface = Color(0xFF1A1A1A),        // карточки
+    onSurface = Color(0xFFEAEAEA),
+
+    surfaceVariant = Color(0xFF2A2A2A), // инпуты / вторичные блоки
+    onSurfaceVariant = Color(0xFFB0B0B0),
+
+    outline = Color(0xFF3A3A3A),
+
+    error = Color(0xFFEAEAEA),          // тоже монохром
+    onError = Color(0xFF121212)
 )
 
 @Composable
@@ -46,7 +48,7 @@ fun MessengerTheme(
         }
 
         darkTheme -> DarkColorScheme
-        else -> LightColorScheme
+        else -> DarkColorScheme
     }
 
     MaterialTheme(
